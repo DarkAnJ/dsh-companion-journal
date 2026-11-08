@@ -3,6 +3,10 @@
 > 面向使用者的里程碑摘要。逐版本细节在 [`docs/devlog-history.md`](docs/devlog-history.md)（124 条，倒序）；
 > 设计取舍与踩坑在 [`DEVLOG.md`](DEVLOG.md)；能力清单在 [`docs/FEATURES.md`](docs/FEATURES.md)。
 
+## v0.64.2 · 2026-11-09（文档同步）
+
+- 只同步发布包内的 README / DEVLOG / FEATURES：热键改为「可自定义」表述，新增在线维护文档；代码与 0.64.1 完全相同。
+
 ## v0.64.1 · 2026-11-09（status 带权限）
 
 - `/companion status` 增加一行「权限 屏幕录制已授权 / 辅助功能未授权」，首次安装排障时不用先翻设置页。
