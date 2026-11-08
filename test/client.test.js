@@ -66,6 +66,7 @@ const reactStub = {
   useState: (initial) => [initial, () => {}],
   useEffect: () => {},
   useCallback: (fn) => fn,
+  useRef: (initial) => ({ current: initial }),
 };
 
 await import('../lib/client.js');
@@ -182,6 +183,53 @@ check('陪伴记录面板：能渲染出搜索框、列表面与两个清理入�
   ok(joined.includes('只清理截图'), '缺少「只清理截图」按钮');
   ok(joined.includes('删除全部记录'), '缺少「删除全部记录」按钮');
   ok(joined.includes('今天') && joined.includes('7 天') && joined.includes('30 天'), '缺少时间范围切换');
+});
+
+check('设置页：能渲染权限卡片与三个入口', () => {
+  const registrations = [];
+  const ctx = {
+    effect: (callback) => {
+      const dispose = callback();
+      return typeof dispose === 'function' ? dispose : () => {};
+    },
+    slots: {
+      inject: (_key, callback) => {
+        callback();
+        return () => {};
+      },
+      register: (options, component) => {
+        registrations.push({ options, component });
+        return () => {};
+      },
+    },
+  };
+  moduleDefinition.apply(ctx);
+  const settings = registrations.find((r) => r.options.name === 'settings.section');
+  ok(settings, '缺少设置页注册');
+  const tree = settings.component({});
+  ok(tree && tree.type === 'element', '设置页应返回元素');
+
+  const texts = [];
+  const walk = (node) => {
+    if (node === null || node === undefined) return;
+    if (typeof node === 'string') {
+      texts.push(node);
+      return;
+    }
+    if (typeof node === 'number') return;
+    if (Array.isArray(node)) {
+      for (const child of node) walk(child);
+      return;
+    }
+    if (node.type === 'element') {
+      for (const child of (node.args ?? []).slice(2)) walk(child);
+    }
+  };
+  walk(tree);
+  const joined = texts.join(' | ');
+  for (const needle of ['权限', '屏幕录制', '辅助功能', '请求授权', '打开设置', '刷新状态']) {
+    ok(joined.includes(needle), `设置页缺少「${needle}」：${joined.slice(0, 300)}`);
+  }
 });
 
 check('侧边栏图标：能渲染且带标题', () => {
