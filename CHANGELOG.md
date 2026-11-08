@@ -3,6 +3,17 @@
 > 面向使用者的里程碑摘要。逐版本细节在 [`docs/devlog-history.md`](docs/devlog-history.md)（124 条，倒序）；
 > 设计取舍与踩坑在 [`DEVLOG.md`](DEVLOG.md)；能力清单在 [`docs/FEATURES.md`](docs/FEATURES.md)。
 
+## v0.64.0 · 2026-11-09（首次安装权限引导）
+
+- 设置页新增「权限」卡片：屏幕录制 / 辅助功能 / 自动化三项状态，「请求授权」「打开设置」「刷新状态」三个入口。
+- 原生桥新增 `request-screen` / `request-accessibility`：
+  - 屏幕录制走 `CGRequestScreenCaptureAccess()`，第一次会弹 macOS 系统授权框；
+  - 辅助功能走带 prompt 的 `AXIsProcessTrustedWithOptions`，不再只是静默查询；
+  - 用户之前拒绝过时系统不会反复弹，页面会引导去设置面板。
+- 深链直达 `隐私与安全性` 的屏幕录制 / 辅助功能 / 自动化面板。
+- 授权后仍要求完全退出并重开 DeepSeek Harness；卡片里明确写出。
+- 测试：plugin 14 → 18 项（权限状态 / 请求 / 打开设置 / 设置页载荷），全套 18 套 / 181 项。
+
 ## v0.63.0 · 2026-11-09（首个公开发布 + 改名）
 
 - 包名、bundle id、客户端 id 与 HTTP 路由前缀统一从 `dsh-companion` 改为

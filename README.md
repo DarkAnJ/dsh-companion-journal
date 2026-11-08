@@ -93,6 +93,15 @@ dsh plugin --profile desktop add \
 
 路径：`系统设置 → 隐私与安全性`，勾选后**重启 DSH**。
 
+装好后在 `设置 → 陪伴桌宠 → 权限` 里可以直接看到三项状态：
+
+- **请求授权**：触发 macOS 的系统授权框（屏幕录制 / 辅助功能）。系统框只在第一次或用户明确请求时出现；如果之前拒绝过，系统不会反复弹，只能手动去设置里勾。
+- **打开设置**：直接跳到 `隐私与安全性` 里对应的面板，不用自己找。
+- **刷新状态**：重新查询，不弹窗。
+- 自动化按应用授权，首次读取 Word / Preview / Skim 时由系统弹窗；卡片里也给了直达入口。
+
+授权后必须**完全退出并重开 DeepSeek Harness**，TCC 身份才会重新加载。
+
 ## 使用
 
 ### 看一眼（F8）
@@ -203,7 +212,7 @@ dsh plugin --profile desktop add \
 ```bash
 bash bridge/build.sh          # 原生桥
 bash buddy/build.sh           # 桌宠浮窗
-npm test                      # 18 套 / 177 项
+npm test                      # 18 套 / 181 项
 node test/pack.test.js        # 真的 npm pack 一份，再从带空格的路径试装
 node test/identity.test.js    # 包名 / patch id / 客户端 id / 路由一致性
 ```

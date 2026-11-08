@@ -18,6 +18,9 @@
 // 测试里不拉真正的浮窗进程：它会常驻，让 node 永远退不出去。
 process.env.DSH_COMPANION_NO_BUDDY = '1';
 process.env.DSH_COMPANION_NO_MIGRATE = '1';
+// 权限请求在测试里不能真的弹系统框，也不能真的打开系统设置。
+process.env.DSH_COMPANION_NO_PERMISSION_PROMPT = '1';
+process.env.DSH_COMPANION_NO_OPEN = '1';
 
 let passed = 0;
 const failures = [];
@@ -290,6 +293,75 @@ async function main() {
     eq(parsed.ok, true);
     ok(parsed.observer, 'state 应带 observer');
     ok(parsed.bridge, 'state 应带 bridge 状态');
+  });
+
+  /** 调一次 HTTP 路由；body 会被序列化成 JSON 流。 */
+  async function callRoute(path, { method = 'GET', body } = {}) {
+    const route = harness.routes.find((r) => r.path === '/dsh-companion-journal-8201');
+    const req = {
+      url: path,
+      method,
+      async *[Symbol.asyncIterator]() {
+        if (body !== undefined) yield Buffer.from(JSON.stringify(body));
+      },
+    };
+    let status = 0;
+    let text = '';
+    const res = {
+      destroyed: false,
+      writableEnded: false,
+      writeHead(code) {
+        status = code;
+      },
+      end(chunk) {
+        text += chunk;
+        res.writableEnded = true;
+      },
+    };
+    await route.handler(req, res);
+    return { status, body: text ? JSON.parse(text) : null };
+  }
+
+  await check('权限状态路由返回屏幕录制 / 辅助功能布尔值', async () => {
+    const { status, body } = await callRoute('/dsh-companion-journal-8201/permissions');
+    eq(status, 200);
+    eq(body.ok, true);
+    ok(typeof body.screenRecording === 'boolean', 'screenRecording 应为布尔');
+    ok(typeof body.accessibility === 'boolean', 'accessibility 应为布尔');
+    eq(body.automation, 'per-app');
+  });
+
+  await check('权限请求路由能走通（测试环境不真弹系统框）', async () => {
+    const { status, body } = await callRoute('/dsh-companion-journal-8201/permissions/request', {
+      method: 'POST',
+      body: { kind: 'screen' },
+    });
+    eq(status, 200);
+    eq(body.ok, true);
+    eq(body.requested, false, '测试环境应跳过真实 CGRequest');
+  });
+
+  await check('打开系统设置路由返回深链，且非法类型被拒', async () => {
+    const opened = await callRoute('/dsh-companion-journal-8201/permissions/open', {
+      method: 'POST',
+      body: { kind: 'screen' },
+    });
+    eq(opened.status, 200);
+    eq(opened.body.ok, true);
+    ok(opened.body.url.includes('Privacy_ScreenCapture'), '屏幕录制深链不对');
+
+    const bad = await callRoute('/dsh-companion-journal-8201/permissions/open', {
+      method: 'POST',
+      body: { kind: 'nope' },
+    });
+    eq(bad.status, 400);
+  });
+
+  await check('设置页载荷带权限状态', async () => {
+    const { status, body } = await callRoute('/dsh-companion-journal-8201/settings');
+    eq(status, 200);
+    eq(body.ok, true);
+    ok(body.permissions && typeof body.permissions.screenRecording === 'boolean', '缺少 permissions');
   });
 
   // ── 汇总 ──────────────────────────────────────────────────────────────────

@@ -25,6 +25,8 @@
 //   pdftext --path <pdf> [--max-chars N]
 //   axtext --pid <pid>
 //   trust
+//   request-screen          （主动触发屏幕录制授权框，macOS 10.15+）
+//   request-accessibility   （主动触发辅助功能授权提示）
 //
 // @module dsh-companion/bridge/DshBridge
 
@@ -66,7 +68,7 @@ struct Args {
 func parseArgs() -> Args {
     var rest = Array(CommandLine.arguments.dropFirst())
     guard let command = rest.first else {
-        fail("usage", "需要子命令：windows | frontapp | idle | pdftext | axtext | trust", code: 1)
+        fail("usage", "需要子命令：windows | frontapp | idle | pdftext | axtext | trust | request-screen | request-accessibility", code: 1)
     }
     rest.removeFirst()
     var flags: [String: String] = [:]
@@ -101,6 +103,19 @@ func screenRecordingGranted() -> Bool {
 
 func accessibilityGranted() -> Bool {
     AXIsProcessTrusted()
+}
+
+/// 主动请求屏幕录制授权。第一次调用会弹系统框；用户拒绝过就不会再弹。
+@available(macOS 10.15, *)
+func requestScreenRecording() -> Bool {
+    CGRequestScreenCaptureAccess()
+}
+
+/// 主动请求辅助功能授权。带 prompt 的版本会把 App 加进列表并弹提示；
+/// 不带 prompt 的 AXIsProcessTrusted() 只查询，永远不会弹。
+func requestAccessibility() -> Bool {
+    let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
+    return AXIsProcessTrustedWithOptions(options)
 }
 
 // MARK: - 窗口
@@ -1120,6 +1135,28 @@ case "axtext":
 case "trust":
     emit([
         "ok": true,
+        "screenRecording": screenRecordingGranted(),
+        "accessibility": accessibilityGranted(),
+    ])
+
+case "request-screen":
+    // 主动触发系统授权框。返回请求之后的真实状态：用户在弹窗里点完再读一次，
+    // 而不是把 CGRequestScreenCaptureAccess 的返回值当成授权结果。
+    if #available(macOS 10.15, *) {
+        _ = requestScreenRecording()
+    }
+    emit([
+        "ok": true,
+        "requested": true,
+        "screenRecording": screenRecordingGranted(),
+        "accessibility": accessibilityGranted(),
+    ])
+
+case "request-accessibility":
+    _ = requestAccessibility()
+    emit([
+        "ok": true,
+        "requested": true,
         "screenRecording": screenRecordingGranted(),
         "accessibility": accessibilityGranted(),
     ])
