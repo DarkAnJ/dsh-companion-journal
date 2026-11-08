@@ -87,7 +87,7 @@ async function main() {
   });
 
   await check('声明了 DSH 兼容范围', () => {
-    eq(manifest.engines?.dsh, '>=0.2.2-rc.1 <0.3.0');
+    eq(manifest.engines?.dsh, '>=0.2.1-rc.1 <0.3.0');
   });
 
   await check('bundle 只声明 macOS，patch 文件存在', async () => {
