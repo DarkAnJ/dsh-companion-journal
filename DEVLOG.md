@@ -591,6 +591,7 @@ dsh-companion/
 | `docs/watch-experiment.md` | 实验数据 | 「看一阵」的离线结论（不是计划） |
 | `docs/EXTERNAL-REFERENCES.md` | 外部项目参考 | 12 个项目的核心机制、我们采纳/否掉的点与原因 |
 | `docs/AUDIO-DESIGN.md` | 音频设计稿 | 三条采集路径、ASR 选型、隐私与分期（未实现） |
+| `docs/MAINTENANCE.md` | 线上维护 | 线上/本地同步点、发版清单、线上待办（不含功能细节） |
 
 约定：
 
