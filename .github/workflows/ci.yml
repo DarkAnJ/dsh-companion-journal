@@ -31,6 +31,7 @@ jobs:
           done
       - name: Build release tarball
         run: |
+          mkdir -p dist
           npm pack --pack-destination dist
           mv dist/*.tgz dist/dsh-companion-journal.tgz
           shasum -a 256 dist/dsh-companion-journal.tgz
