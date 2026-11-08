@@ -1,0 +1,12 @@
+# 提交到 awesome-dsh-plugin 的条目（原样复制成 data/plugins/DarkAnJ__dsh-companion-journal.yml）
+#
+# 收录规则：https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/blob/main/contributing.md
+# 前置条件：仓库创建满 1 天、已加 dsh-plugin topic、package.json 有 dsh.bundle。
+url: https://github.com/DarkAnJ/dsh-companion-journal
+name: DarkAnJ/dsh-companion-journal
+category: fun
+description:
+  en: 'A self-drawn macOS desktop pet for DeepSeek Harness: six companion_* tools read the frontmost window, capture it for the model, speak in a bubble, and keep a local record of what it saw. macOS 11+ only.'
+  zh: '自带桌宠的 macOS 感知层：六个 companion_* 工具读取前台窗口、截图给模型看、用气泡说话，并把看到的内容留在本机陪伴记录里。仅支持 macOS 11+。'
+icon: https://raw.githubusercontent.com/DarkAnJ/dsh-companion-journal/main/assets/icon-180.png
+tarball: https://github.com/DarkAnJ/dsh-companion-journal/releases/latest/download/dsh-companion-journal.tgz

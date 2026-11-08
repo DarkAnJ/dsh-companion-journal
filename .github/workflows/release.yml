@@ -1,0 +1,38 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test before publishing
+        run: npm test
+      - name: Build tarball
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          npm pack --pack-destination dist
+          mv dist/*.tgz dist/dsh-companion-journal.tgz
+          shasum -a 256 dist/dsh-companion-journal.tgz > dist/dsh-companion-journal.tgz.sha256
+          cat dist/dsh-companion-journal.tgz.sha256
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh release create "$GITHUB_REF_NAME" \
+            dist/dsh-companion-journal.tgz \
+            dist/dsh-companion-journal.tgz.sha256 \
+            --title "dsh-companion-journal $GITHUB_REF_NAME" \
+            --generate-notes

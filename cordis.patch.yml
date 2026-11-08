@@ -1,0 +1,12 @@
+# dsh-companion-journal 的 bundle patch —— 把「陪伴层」挂进 DSH 配置树
+#
+# 规则（踩过的坑，改之前先看）：
+#   - id 必须全局唯一，且与包名一致，否则商城预检与 patch 覆盖都定位不到这一行。
+#   - name 会解析包的 exports["."]（宿主半侧 lib/index.js）。
+#   - package.json 里声明了 dsh.client，DSH 的模块系统会同时把本包扫描为
+#     浏览器插件，提供 /plugins/dsh-companion-journal/client.js 给页面。
+#   - 这一行只能写在这里或用 bundle 通道，二选一。两边都写会双重挂载，
+#     触发 "already registered"，严重时 DSH 起不来。
+- insert:
+    - id: dsh-companion-journal
+      name: 'dsh-companion-journal'

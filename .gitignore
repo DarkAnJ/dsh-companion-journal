@@ -1,0 +1,9 @@
+# 构建产物与本地垃圾
+node_modules/
+.build/
+*.log
+npm-debug.log*
+*.tgz
+.DS_Store
+.cache/
+dist/

@@ -1,0 +1,80 @@
+{
+  "name": "dsh-companion-journal",
+  "version": "0.63.0",
+  "type": "module",
+  "description": "自绘桌宠的感知与协同层：读当前窗口、截图给模型看、气泡说话、留存陪伴记录。",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "desktop-pet",
+    "companion-journal",
+    "macos",
+    "screenshot",
+    "accessibility"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DarkAnJ/dsh-companion-journal.git"
+  },
+  "homepage": "https://github.com/DarkAnJ/dsh-companion-journal#readme",
+  "bugs": {
+    "url": "https://github.com/DarkAnJ/dsh-companion-journal/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18",
+    "dsh": ">=0.2.2-rc.1 <0.3.0"
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/**/*.js",
+    "bridge/DshBridge.swift",
+    "bridge/build.sh",
+    "bridge/bin/dsh-bridge",
+    "locale/*.json",
+    "cordis.patch.yml",
+    "icon.svg",
+    "README.md",
+    "CHANGELOG.md",
+    "DEVLOG.md",
+    "docs/FEATURES.md",
+    "docs/PRIVACY.md",
+    "docs/devlog-history.md",
+    "docs/EXTERNAL-REFERENCES.md",
+    "LICENSE",
+    "buddy/bin",
+    "assets/buddy",
+    "buddy/Buddy.swift",
+    "buddy/build.sh"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml",
+      "platforms": [
+        "darwin"
+      ]
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": []
+    },
+    "clientVersion": "0.63.0"
+  },
+  "scripts": {
+    "build:bridge": "bash bridge/build.sh",
+    "test": "node test/policy.test.js && node test/client.test.js && node test/identity.test.js && node test/hotkey.test.js && node test/history.test.js && node test/chat.test.js && node test/persona.test.js && node test/prompt.test.js && node test/seed.test.js && node test/stream.test.js && node test/native-menu.test.js && node test/watch.test.js && node test/sheet.test.js && node test/plugin.test.js && node test/hotkey-bridge.test.js && node test/pack.test.js && node test/decoupling.test.js && node test/migrate.test.js"
+  },
+  "author": "DarkAnJ",
+  "main": "lib/index.js"
+}

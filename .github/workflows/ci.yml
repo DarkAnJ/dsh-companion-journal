@@ -1,0 +1,36 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test / macOS
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Test (18 suites, includes real npm pack)
+        run: npm test
+      - name: Verify native binaries are universal and executable
+        run: |
+          set -euo pipefail
+          for bin in bridge/bin/dsh-bridge buddy/bin/dsh-buddy; do
+            test -x "$bin"
+            file "$bin"
+            lipo -info "$bin" | grep -q 'x86_64'
+            lipo -info "$bin" | grep -q 'arm64'
+          done
+      - name: Build release tarball
+        run: |
+          npm pack --pack-destination dist
+          mv dist/*.tgz dist/dsh-companion-journal.tgz
+          shasum -a 256 dist/dsh-companion-journal.tgz
