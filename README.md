@@ -38,7 +38,7 @@
 | 项 | 要求 |
 |---|---|
 | 系统 | macOS 11+（Apple Silicon / Intel，二进制为 universal） |
-| DeepSeek Harness | `>= 0.2.2-rc.1 < 0.3.0` |
+| DeepSeek Harness | `>= 0.2.1-rc.1 < 0.3.0`（0.2.2-rc.1 实测通过） |
 | 其他平台 | 不支持：插件声明了 `darwin`，Windows / Linux 会被宿主拒绝安装 |
 
 ## 安装
