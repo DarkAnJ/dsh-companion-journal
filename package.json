@@ -1,6 +1,6 @@
 {
   "name": "dsh-companion-journal",
-  "version": "0.64.0",
+  "version": "0.64.1",
   "type": "module",
   "description": "自绘桌宠的感知与协同层：读当前窗口、截图给模型看、气泡说话、留存陪伴记录。",
   "keywords": [

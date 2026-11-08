@@ -189,6 +189,13 @@ async function main() {
     eq(typeof command.handler, 'function');
   });
 
+  await check('companion status 带权限状态（首次安装的排障入口）', async () => {
+    const command = harness.commands.find((c) => c.name === 'companion');
+    const result = await command.handler({ rawInput: 'status' });
+    eq(result.kind, 'success');
+    ok(result.text.includes('权限 屏幕录制'), `status 应带权限：${result.text}`);
+  });
+
   await check('注册了 /dsh-companion-journal-8201 前缀路由', () => {
     const route = harness.routes.find((r) => r.path === '/dsh-companion-journal-8201');
     ok(route, '缺少状态路由');

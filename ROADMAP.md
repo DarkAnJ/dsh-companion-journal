@@ -7,8 +7,8 @@
 
 ## 当前状态（2026-11-09 01:20）
 
-- 版本：`0.64.0`（新增首次安装权限引导），测试 **18 套 / 181 项**全绿
-  （chat 8 · client 9 · decoupling 4 · history 14 · hotkey 4 · hotkey-bridge 1 · identity 4 · migrate 6 · native-menu 8 · pack 12 · persona 4 · plugin 18 · policy 30 · prompt 12 · seed 11 · sheet 6 · stream 7 · watch 23）
+- 版本：`0.64.1`（新增首次安装权限引导），测试 **18 套 / 182 项**全绿
+  （chat 8 · client 9 · decoupling 4 · history 14 · hotkey 4 · hotkey-bridge 1 · identity 4 · migrate 6 · native-menu 8 · pack 12 · persona 4 · plugin 19 · policy 30 · prompt 12 · seed 11 · sheet 6 · stream 7 · watch 23）
 - **看一眼 / 看几眼 / 记录面板 / 设置页**：稳定。F8 / F7 / F9、多图宫格与大图、追问（带图 + OCR）、
   开新会话（多画面与看一阵都带图）、右键多选批删、顶部冻结、提示词全文可改、人设、热键录制、客户端过期提示。
 - **陪伴记录跳转**：SSE 连接做成页面级单例（活过插件重挂）+ focus / pointerdown / visibilitychange 三处补查。

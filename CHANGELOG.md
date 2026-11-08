@@ -3,6 +3,11 @@
 > 面向使用者的里程碑摘要。逐版本细节在 [`docs/devlog-history.md`](docs/devlog-history.md)（124 条，倒序）；
 > 设计取舍与踩坑在 [`DEVLOG.md`](DEVLOG.md)；能力清单在 [`docs/FEATURES.md`](docs/FEATURES.md)。
 
+## v0.64.1 · 2026-11-09（status 带权限）
+
+- `/companion status` 增加一行「权限 屏幕录制已授权 / 辅助功能未授权」，首次安装排障时不用先翻设置页。
+- 宿主侧改动，客户端版本不变（`dsh.clientVersion` 仍为 0.64.0），不需要重启客户端。
+
 ## v0.64.0 · 2026-11-09（首次安装权限引导）
 
 - 设置页新增「权限」卡片：屏幕录制 / 辅助功能 / 自动化三项状态，「请求授权」「打开设置」「刷新状态」三个入口。

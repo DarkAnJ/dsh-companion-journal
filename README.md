@@ -212,7 +212,7 @@ dsh plugin --profile desktop add \
 ```bash
 bash bridge/build.sh          # 原生桥
 bash buddy/build.sh           # 桌宠浮窗
-npm test                      # 18 套 / 181 项
+npm test                      # 18 套 / 182 项
 node test/pack.test.js        # 真的 npm pack 一份，再从带空格的路径试装
 node test/identity.test.js    # 包名 / patch id / 客户端 id / 路由一致性
 ```
