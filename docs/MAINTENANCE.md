@@ -1,7 +1,7 @@
 # 线上仓库维护
 
 > 这份文档只记录**线上仓库与本地进度的对齐状态**，以及只有线上才需要做的事。
-> 功能设计、实现细节、版本日志仍然在本地维护（`DEVLOG.md`、`docs/devlog-history.md`、`CHANGELOG.md`）。
+> 功能设计、实现细节与过程记录仍在本地维护（这些文件不进仓库，见下一节）；`CHANGELOG.md` 是对外的版本摘要。
 > 线上与本地进度不要求实时一致；**发版时**才把该同步的内容同步上去。
 
 ## 当前状态
@@ -12,6 +12,33 @@
 | 提交 | 与本地一致 | 见 `git log -1` |
 | 测试 | CI 通过 | 18 套 / 183 项 |
 | README | 已按公开项目结构重写 | 同左 |
+
+## 仓库边界（哪些进 GitHub、哪些只在本机）
+
+原则：**GitHub 上只放「别人要用的东西」**；过程记录留在本机，不发布、不进仓库。
+
+| 类别 | 内容 | 是否进仓库 |
+|---|---|---|
+| 源码 | `lib/`、`bridge/`、`buddy/`、`test/`、`.github/` | ✅ |
+| 面向用户的文档 | README、CHANGELOG、docs/FEATURES、docs/PRIVACY、本文档、LICENSE | ✅ |
+| 发布资源 | `assets/`（立绘、图标）、`locale/`、`cordis.patch.yml`、`market/` | ✅ |
+| 过程记录 | DEVLOG、ROADMAP、docs/devlog-history、docs/EXTERNAL-REFERENCES、docs/AUDIO-DESIGN、docs/audio-and-speech-ideas、docs/watch-experiment、docs/watch-probe-sample、docs/images | ❌ 只在本机（已在 `.gitignore`） |
+| 构建产物 | `dist/`（.tgz）、`node_modules/`、`.build/`、日志 | ❌ |
+
+理由：过程记录里有大量实验数据、外部项目调研和未定决策，对使用者没有价值，也不适合长期对外；
+它们的变化频率远高于代码，混在仓库里只会让「改了什么」变模糊。
+
+**发布包的边界**由 `package.json` 的 `files` 白名单决定（17 条）：只含运行时必需文件 + 三份用户文档
+（README / FEATURES / PRIVACY / MAINTENANCE），不含测试、CI 与任何过程记录。
+
+新增文件时按这张表判断放哪：拿不准就问一句「用户需不需要看到它」。
+
+## 分支与提交
+
+- **单线 `main`**，不长期开分支：功能改动直接在本地改、跑测试、提交、推送；
+- 每次提交只做一件事，消息用 `feat:` / `fix:` / `docs:` / `test:` / `chore:` 前缀；
+- **发版用 tag**（`vX.Y.Z`）：tag 指向的提交必须已经推送、工作区干净、测试全绿；
+- 已发布的 tag 不回改；发现问题就发下一个版本。
 
 ## 待办（线上）
 

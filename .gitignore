@@ -7,3 +7,16 @@ npm-debug.log*
 .DS_Store
 .cache/
 dist/
+
+# 本地开发笔记（不发布、不进 GitHub）
+# 这些是过程记录：版本流水、设计取舍、外部项目调研、实验数据、市场草稿图。
+# 面向用户的文档仍然进仓库：README / CHANGELOG / docs/FEATURES / docs/PRIVACY / docs/MAINTENANCE。
+/DEVLOG.md
+/ROADMAP.md
+/docs/devlog-history.md
+/docs/EXTERNAL-REFERENCES.md
+/docs/AUDIO-DESIGN.md
+/docs/audio-and-speech-ideas.md
+/docs/watch-experiment.md
+/docs/watch-probe-sample.jsonl
+/docs/images/

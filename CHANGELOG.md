@@ -1,11 +1,11 @@
 # 更新日志
 
-> 面向使用者的里程碑摘要。逐版本细节在 [`docs/devlog-history.md`](docs/devlog-history.md)（124 条，倒序）；
-> 设计取舍与踩坑在 [`DEVLOG.md`](DEVLOG.md)；能力清单在 [`docs/FEATURES.md`](docs/FEATURES.md)。
+> 面向使用者的里程碑摘要。能力清单与入口见 [`docs/FEATURES.md`](docs/FEATURES.md)，
+> 隐私与数据说明见 [`docs/PRIVACY.md`](docs/PRIVACY.md)。
 
 ## v0.64.2 · 2026-11-09（文档同步）
 
-- 只同步发布包内的 README / DEVLOG / FEATURES：热键改为「可自定义」表述，新增在线维护文档；代码与 0.64.1 完全相同。
+- 同步发布包内的 README / FEATURES / MAINTENANCE：热键改为「可自定义」表述，新增在线维护文档；代码与 0.64.1 完全相同。
 
 ## v0.64.1 · 2026-11-09（status 带权限）
 
