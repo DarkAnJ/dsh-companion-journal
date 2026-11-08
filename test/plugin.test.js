@@ -211,8 +211,11 @@ async function main() {
     ok(typeof value.frontApp === 'string', 'frontApp 应为字符串');
     ok(Array.isArray(value.windows), 'windows 应为数组');
     ok(value.count === value.windows.length, 'count 应与数组长度一致');
-    // 至少要有 DSH 自己这个窗口，否则说明桥枚举失败。
-    ok(value.count > 0, '应至少枚举到一个窗口');
+    // 本机至少有 DSH 自己这个窗口；GitHub 的 headless runner 没有 WindowServer，
+    // 枚举到 0 是环境事实，不是桥坏了。CI 上只要求给出可判定的结果结构。
+    if (process.env.CI !== 'true') {
+      ok(value.count > 0, '应至少枚举到一个窗口');
+    }
   });
 
   await check('companion_read 在当前环境给出可判定的来源', async () => {
