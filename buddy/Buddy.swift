@@ -716,6 +716,10 @@ final class BuddyController: NSObject, NSApplicationDelegate {
     private let options = BuddyOptions.parse()
     /// 应用激活通知的观察者（准备阶段跟随活动窗口用）。
     private var appActivationObserver: NSObjectProtocol?
+    /// 前台应用的「焦点窗口」观察器：同一个应用内换窗口也要能感知（AXObserver，事件驱动）。
+    private var focusObserver: AXObserver?
+    private var focusObservedPid: pid_t = 0
+    private var lastFocusEventAt = Date.distantPast
     private var window: NSWindow!
     private var view: BuddyView!
     private var timer: Timer?
@@ -736,6 +740,9 @@ final class BuddyController: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        if let front = NSWorkspace.shared.frontmostApplication?.processIdentifier, front != getpid() {
+            observeFocusedWindow(pid: front)
+        }
 
         // 应用激活监听：准备阶段（看一阵等「开始」）要跟随活动窗口。
         // 用系统通知而不是每秒起子进程查询：一次激活只发一条事件，空闲时零开销。
@@ -748,6 +755,7 @@ final class BuddyController: NSObject, NSApplicationDelegate {
             let app = note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
             if app?.processIdentifier == getpid() { return }
             self.appendPress(action: "front-changed", id: nil, frontPid: app?.processIdentifier, frontApp: app?.localizedName)
+            if let pid = app?.processIdentifier { self.observeFocusedWindow(pid: pid) }
         }
 
         let image = options.asset.isEmpty ? nil : NSImage(contentsOfFile: options.asset)
@@ -967,6 +975,45 @@ final class BuddyController: NSObject, NSApplicationDelegate {
     }
 
     // MARK: 事件
+
+    /// 观察指定应用的「焦点窗口」变化。
+    ///
+    /// 为什么需要：NSWorkspace 的应用激活通知只在**换应用**时触发；同一个应用里
+    /// 用快捷键或点另一个窗口切窗口，前台应用没变，宿主收不到任何事件，
+    /// 「看一阵」准备阶段的活动窗口就停在旧窗口上（用户实测）。
+    /// AXObserver 是事件驱动的，只在真正发生焦点窗口变化时回调，不需要轮询。
+    private func observeFocusedWindow(pid: pid_t) {
+        guard pid > 0 else { return }
+        if focusObservedPid == pid, focusObserver != nil { return }
+        // 没有辅助功能授权时 AXObserver 收不到通知：静默跳过，行为退回应用级激活。
+        if !AXIsProcessTrusted() { return }
+        if let old = focusObserver {
+            CFRunLoopRemoveSource(CFRunLoopGetMain(), AXObserverGetRunLoopSource(old), .defaultMode)
+            focusObserver = nil
+        }
+        focusObservedPid = 0
+        var observer: AXObserver?
+        let callback: AXObserverCallback = { _, _, _, refcon in
+            guard let refcon else { return }
+            let controller = Unmanaged<BuddyController>.fromOpaque(refcon).takeUnretainedValue()
+            controller.focusedWindowChanged()
+        }
+        guard AXObserverCreate(pid, callback, &observer) == .success, let observer else { return }
+        let app = AXUIElementCreateApplication(pid)
+        AXObserverAddNotification(observer, app, kAXFocusedWindowChangedNotification as CFString, Unmanaged.passUnretained(self).toOpaque())
+        CFRunLoopAddSource(CFRunLoopGetMain(), AXObserverGetRunLoopSource(observer), .defaultMode)
+        focusObserver = observer
+        focusObservedPid = pid
+    }
+
+    /// 同一应用内切换焦点窗口：告诉宿主一次，让它重取窗口号。
+    private func focusedWindowChanged() {
+        let now = Date()
+        // 窗口标题栏点击/最小化会连着发几次，250ms 内只报一次。
+        if now.timeIntervalSince(lastFocusEventAt) < 0.25 { return }
+        lastFocusEventAt = now
+        appendPress(action: "focus-changed", id: nil, frontPid: focusObservedPid, frontApp: nil)
+    }
 
     private func appendPress(action: String, id: String?, frontPid: pid_t? = nil, frontApp: String? = nil) {
         let now = Int(Date().timeIntervalSince1970 * 1000)
