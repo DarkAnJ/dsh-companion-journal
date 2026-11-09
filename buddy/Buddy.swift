@@ -1010,7 +1010,11 @@ final class BuddyController: NSObject, NSApplicationDelegate {
     @objc private func menuCollect() { appendPress(action: "collect", id: nil) }
     @objc private func menuWatch() { appendPress(action: "watch-toggle", id: nil) }
     @objc private func menuOpenPanel() { appendPress(action: "panel", id: nil) }
-    @objc private func menuHide() { window.orderOut(nil) }
+    @objc private func menuHide() {
+        // 先告诉宿主「用户主动隐藏了」，让它把可见性存下来（重启后仍然隐藏）。
+        appendPress(action: "hide-pet", id: nil)
+        window.orderOut(nil)
+    }
     @objc private func menuQuit() { NSApp.terminate(nil) }
 
     // MARK: 气泡
