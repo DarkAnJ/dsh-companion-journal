@@ -1,6 +1,6 @@
 {
   "name": "dsh-companion-journal",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "type": "module",
   "description": "自绘桌宠的感知与协同层：读当前窗口、截图给模型看、气泡说话、留存陪伴记录。",
   "keywords": [
@@ -67,7 +67,7 @@
       "immediately": true,
       "inject": []
     },
-    "clientVersion": "1.0.18"
+    "clientVersion": "1.0.19"
   },
   "scripts": {
     "build:bridge": "bash bridge/build.sh",
