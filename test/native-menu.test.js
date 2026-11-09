@@ -38,10 +38,10 @@ check('右键菜单有「看一阵」且发出 watch-toggle', () => {
   ok(/@objc private func menuWatch\(\) \{ appendPress\(action: "watch-toggle"/.test(swift), 'menuWatch 应发出 watch-toggle');
 });
 
-check('「记下这一帧」已恢复（手动插一帧）', () => {
-  ok(swift.includes('"记下这一帧"'), '菜单项应存在');
-  ok(swift.includes('appendPress(action: "watch-shot"'), '菜单项要发 watch-shot');
-  ok(host.includes("id: 'watch-shot', label: '记一帧'"), '气泡里也要有「记一帧」');
+check('「记下这一帧」只在录制气泡里，不进右键菜单', () => {
+  ok(!swift.includes('"记下这一帧"'), '菜单项应该没有');
+  ok(host.includes("id: 'watch-shot', label: '记一帧'"), '录制气泡里要有「记一帧」');
+  ok(host.includes("if (action === 'watch-shot')"), '动作处理要保留');
 });
 
 // 准备阶段要跟随活动窗口；按开始才锁定（用户明确要求）。
