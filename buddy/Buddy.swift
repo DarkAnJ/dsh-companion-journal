@@ -1082,7 +1082,10 @@ final class BuddyController: NSObject, NSApplicationDelegate {
         if view.bubbleSticky {
             bubbleHideAt = nil   // 常驻：由调用方通过新气泡或隐藏来结束
         } else {
-            let seconds = min(22.0, max(6.0, Double(text.count) / 14.0 + 5.0))
+            // 短确认（「已取消」「这一阵丢弃了」）由宿主指定停留时间：
+            // 一句话的确认不该在屏幕上挂 6 秒以上。
+            let requested = (object["ttlMs"] as? Double) ?? 0
+            let seconds = requested > 0 ? max(0.8, min(30.0, requested / 1000.0)) : min(22.0, max(6.0, Double(text.count) / 14.0 + 5.0))
             bubbleHideAt = Date().addingTimeInterval(seconds)
             // 一次性定时器：到点才醒，不需要常态轮询。
             let work = DispatchWorkItem { [weak self] in self?.hideBubbleNow() }
