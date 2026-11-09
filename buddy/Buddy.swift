@@ -998,6 +998,7 @@ final class BuddyController: NSObject, NSApplicationDelegate {
         menu.addItem(withTitle: "看一眼并提问", action: #selector(menuAsk), keyEquivalent: "").target = self
         menu.addItem(withTitle: "看几眼", action: #selector(menuCollect), keyEquivalent: "").target = self
         menu.addItem(withTitle: "看一阵", action: #selector(menuWatch), keyEquivalent: "").target = self
+        menu.addItem(withTitle: "记下这一帧", action: #selector(menuWatchShot), keyEquivalent: "").target = self
         menu.addItem(.separator())
         menu.addItem(withTitle: "陪伴记录", action: #selector(menuOpenPanel), keyEquivalent: "").target = self
         menu.addItem(withTitle: "隐藏", action: #selector(menuHide), keyEquivalent: "").target = self
@@ -1010,6 +1011,8 @@ final class BuddyController: NSObject, NSApplicationDelegate {
     @objc private func menuCollect() { appendPress(action: "collect", id: nil) }
     @objc private func menuWatch() { appendPress(action: "watch-toggle", id: nil) }
     @objc private func menuOpenPanel() { appendPress(action: "panel", id: nil) }
+    @objc private func menuWatchShot() { appendPress(action: "watch-shot", id: nil) }
+
     @objc private func menuHide() {
         // 先告诉宿主「用户主动隐藏了」，让它把可见性存下来（重启后仍然隐藏）。
         appendPress(action: "hide-pet", id: nil)
