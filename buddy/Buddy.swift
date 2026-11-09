@@ -1024,6 +1024,18 @@ final class BuddyController: NSObject, NSApplicationDelegate {
         guard let data = FileManager.default.contents(atPath: options.sayPath),
               let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
         lastSayAt = Date()
+        // 人物显隐：设置页「显示桌宠」开关与隐藏后的恢复都走这条。
+        // 隐藏用 orderOut（窗口还在、热键还在），显示用 orderFront（不抢焦点）。
+        if (object["hidePet"] as? Bool) == true {
+            window.orderOut(nil)
+            return
+        }
+        if (object["show"] as? Bool) == true {
+            window.orderFront(nil)
+            view.needsDisplay = true
+            saveOrigin(window.frame.origin)
+            return
+        }
         // 主动收起：常驻气泡里的「知道了」按钮走这条，不然它会一直挂在人物头顶。
         if (object["hide"] as? Bool) == true {
             view.segmentText = ""
